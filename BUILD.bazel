@@ -1,0 +1,49 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@bazel_gazelle//:def.bzl", "gazelle")
+
+# gazelle:prefix github.com/laurentlb/stardbg
+gazelle(name = "gazelle")
+
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+
+proto_library(
+    name = "starlark_debugging_proto",
+    srcs = ["starlark_debugging.proto"],
+    visibility = ["//visibility:public"],
+)
+
+go_proto_library(
+    name = "starlark_debugging_go_proto",
+    importpath = "github.com/laurentlb/stardbg/starlark_debugging",
+    proto = ":starlark_debugging_proto",
+    visibility = ["//visibility:public"],
+)
+
+go_library(
+    name = "go_default_library",
+    srcs = ["main.go"],
+    importpath = "github.com/laurentlb/stardbg",
+    visibility = ["//visibility:private"],
+    deps = [
+        ":starlark_debugging_go_proto",
+        "@com_github_golang_protobuf//proto:go_default_library",
+        "@org_golang_google_protobuf//encoding/protojson:go_default_library",
+    ],
+)
+
+go_binary(
+    name = "stardbg",
+    data = ["web_data"],
+    embed = [":go_default_library"],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "web_data",
+    srcs = glob([
+        "*.html",
+        "*.css",
+        "*.js",
+    ]),
+)

@@ -1,0 +1,71 @@
+body {
+    margin: 0;
+}
+
+/* The editor widget. */
+.CodeMirror {
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+.CodeMirror-linewidget {
+  text-align: center;
+}
+/* Breakpoint bullets */
+.breakpoints {
+  width: 0.8em;
+}
+.breakpoint {
+    color: #f66;
+    text-size: 1em;
+}
+/* The line being executed. */
+.selected-line {
+  background-color: #ff7;
+}
+.selected-line {
+  background-color: #ff7;
+}
+
+
+/* The status line at the top. */
+.status {
+    background-color: #000;
+    color: #ccc;
+    font-family: monospace;
+}
+
+
+/* Tables */
+tr:nth-child(even) {
+  background-color: #f0f0f0;
+}
+tr:nth-child(odd) {
+  background-color: #f7f7f7;
+}
+th {}
+td {
+    font-family: monospace;
+}
+
+
+/* Tabs */
+.tab {
+  overflow: hidden;
+  background-color: #f0f0f0;
+}
+.tab button {
+  background-color: inherit;
+  float: left;
+  outline: none;
+  cursor: pointer;
+  padding: 6px 10px;
+  border: 1px #fff solid;
+}
+.tab button.active, .tab button:hover {
+  background-color: #ccc;
+  text-shadow: -0.04ex 0 black, 0.04ex 0 black;
+}
+.tab-content {
+  display: none;
+  padding: 0px 0px;
+}

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Stardbg</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.29.0/codemirror.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.29.0/mode/python/python.js"></script>
+<script src="./main.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.29.0/codemirror.css">
+<link rel="stylesheet" href="style.css">
+
+<div class="status" id="status">Debugging somefile.bzl</div>
+
+<div class="tab">
+  <button class="tablinks" onclick="stepButton('NONE')">Continue</button>
+  <button class="tablinks" onclick="stepButton('INTO')">Step into</button>
+  <button class="tablinks" onclick="stepButton('OVER')">Step over</button>
+  <button class="tablinks" onclick="stepButton('OUT')">Step out</button>
+</div>
+
+<textarea id="code">
+load(":x.bzl", "foo")
+
+def myfunc(x):
+    foo(x)
+
+def fct():
+    w = 3 * 5 if True else 2
+    return "abced"
+
+load(":x.bzl", "foo")
+
+def myfunc(x):
+    foo(x)
+
+def fct():
+    w = 3 * 5 if True else 2
+    return "abced"
+
+load(":x.bzl", "foo")
+
+def myfunc(x):
+    foo(x)
+
+def fct():
+    w = 3 * 5 if True else 2
+    return "abced"
+
+</textarea>
+
+<div style="overflow-x:auto">
+
+  <div class="tab">
+    <button class="tablinks" onclick="openTab(event, 'locals-tab')">Locals</button>
+    <button class="tablinks" onclick="openTab(event, 'watch-tab')">Watch</button>
+    <button class="tablinks" onclick="openTab(event, 'stack-tab')">Call Stack</button>
+    <button class="tablinks" onclick="openTab(event, 'breakpoints-tab')" id="default-tab">Breakpoints</button>
+    <button class="tablinks" onclick="openTab(event, 'threads-tab')">Paused Threads</button>
+  </div>
+
+  <div id="locals-tab" class="tab-content">
+
+    <table width="100%">
+      <thead>
+        <tr>
+	  <th>Name
+	  <th>Value
+	  <th>Type
+        </tr>
+      </thead>
+      <tbody id="locals-body">
+        <tr>
+	  <td contenteditable="true">foo
+	  <td>12
+	  <td>int
+        </tr>
+        <tr>
+	  <td contenteditable="true">bar
+	  <td>"str"
+	  <td>str
+        </tr>
+        <tr>
+	  <td contenteditable="true">x
+	  <td>5
+	  <td>int
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="watch-tab" class="tab-content">
+    <p>Not implemented.
+  </div>
+
+  <div id="stack-tab" class="tab-content">
+
+    <table width="100%">
+      <thead>
+        <tr>
+	  <th>Function
+          <th>Path
+          <th>Line
+        </tr>
+      </thead>
+      <tbody id="stack-body">
+        <tr>
+          <td>hello
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+  <div id="breakpoints-tab" class="tab-content">
+
+    <table width="100%">
+      <thead>
+        <tr>
+          <th>Path
+          <th>Line
+	  <th>Condition
+        </tr>
+      </thead>
+      <tbody id="breakpoints-body">
+      </tbody>
+    </table>
+
+  </div>
+
+  <div id="threads-tab" class="tab-content">
+
+    <table width="100%">
+      <thead>
+        <tr>
+	  <th>Id
+          <th>Path
+          <th>Line
+	  <th>Name
+	  <th>Reason
+        </tr>
+      </thead>
+      <tbody id="threads-body">
+      </tbody>
+    </table>
+
+    <button class="tablinks" onclick="stopAllButton()">Stop All</button>
+    <button class="tablinks" onclick="stepButton(null)">Resume all</button>
+  </div>
+
+</div>
+
+<script>
+  var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+      mode: {name: "python",
+             version: 3,
+	     extra_keywords: ["load"]},
+      lineNumbers: true,
+      indentUnit: 4,
+      readOnly: true,
+      gutters: ["CodeMirror-linenumbers", "breakpoints"]
+  });
+
+  editor.on("gutterClick", breakpointClick);
+
+  function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+
+      // Hide all the tabs.
+      tabcontent = document.getElementsByClassName("tab-content");
+      for (var i = 0; i < tabcontent.length; i++) {
+          tabcontent[i].style.display = "none";
+      }
+
+      // Remove active from all the tab names.
+      tablinks = document.getElementsByClassName("tablinks");
+      for (var i = 0; i < tablinks.length; i++) {
+          tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+
+      // Show the content.
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+  }
+
+  editor.addLineClass(6, "background", "styled-background");
+  editor.addLineClass(10, "background", "styled-background2");
+  editor.addLineClass(14, "background", "foo-background");
+  document.getElementById("default-tab").click();
+  init(editor);
+  listenEvents();
+
+</script>
